@@ -5,10 +5,14 @@
     <servlet>
         <servlet-name>Jersey Web Application</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
+         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>com.seefurst.vaas</param-value>
-        </init-param>
+        </init-param>  
+        <init-param>
+		    <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+    		<param-value>true</param-value>
+		</init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -21,7 +25,10 @@
     	
     </filter>
     <filter-mapping>
-    	<url-pattern>/*</url-pattern>
     	<filter-name>Repo Login Filter</filter-name>
+    	<url-pattern>/content/*</url-pattern>
     </filter-mapping>
+    <listener>
+    	<listener-class>com.seefurst.vaas.utils.VaasListener</listener-class>
+    </listener>
 </web-app>

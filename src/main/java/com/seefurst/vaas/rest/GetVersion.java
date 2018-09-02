@@ -36,6 +36,13 @@ public class GetVersion implements VaasRestBase{
 		
 	}
 	
+	
+	@Path("admin/test")
+	@Produces("text/html")
+	@GET
+	public Response getTest() {
+		return Response.ok("Yep, I'm here!").build();
+	}
 	/**
 	 * getLatestVersion 
 	 * @description gets the base version of the content node at contentName

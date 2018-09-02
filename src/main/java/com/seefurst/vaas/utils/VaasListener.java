@@ -16,7 +16,7 @@ import org.apache.jackrabbit.oak.Oak;
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_FILEPATH;
 
 
-public class VassListener implements ServletContextListener {
+public class VaasListener implements ServletContextListener {
 	private FileStore fs;
 	
 	public void contextInitialized(ServletContextEvent ctx) {
