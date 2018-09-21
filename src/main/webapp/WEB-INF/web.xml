@@ -13,12 +13,21 @@
 		    <param-name>jersey.config.server.provider.scanning.recursive</param-name>
     		<param-value>true</param-value>
 		</init-param>
+		<init-param>
+			<param-name>jersey.config.server.tracing.type</param-name>
+			<param-value>ALL</param-value>
+		</init-param>
+		<init-param>
+			<param-name>jersey.config.server.tracing.threshold</param-name>
+			<param-value>VERBOSE</param-value>
+		</init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    
     <filter>
     	<filter-name>Repo Login Filter</filter-name>
     	<filter-class>com.seefurst.vaas.utils.VaasRepoFilter</filter-class>
@@ -28,6 +37,7 @@
     	<filter-name>Repo Login Filter</filter-name>
     	<url-pattern>/content/*</url-pattern>
     </filter-mapping>
+    
     <listener>
     	<listener-class>com.seefurst.vaas.utils.VaasListener</listener-class>
     </listener>

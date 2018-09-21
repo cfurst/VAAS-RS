@@ -22,22 +22,16 @@ import javax.servlet.http.HttpServletRequest;
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_ATTRB_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 
-
+@Path("content")
 public class GetVersion implements VaasRestBase{
 	@Context
 	private HttpServletRequest req;
 	
 	
 	
-	@Path("content/get/{contentName}/{versionName}")
-	@GET
-	public void getVersionByName(@PathParam("contentName") String contentName,
-			@PathParam("versionName") String versionName) {
-		
-	}
 	
 	
-	@Path("admin/test")
+	@Path("test")
 	@Produces("text/html")
 	@GET
 	public Response getTest() {
@@ -50,7 +44,7 @@ public class GetVersion implements VaasRestBase{
 	 * @throws RepositoryException 
 	 * @throws UnsupportedRepositoryOperationException 
 	 */
-	@Path("content/get/{contentName}")
+	@Path("get/{contentName}")
 	@GET
 	@Produces("application/json")
 	public Response getLatestVersion(@PathParam("contentName") String contentName)  {
@@ -80,7 +74,7 @@ public class GetVersion implements VaasRestBase{
 		
 	}
 	
-	@Path("content/get/{contentName}/{versionName}")
+	@Path("get/{contentName}/{versionName}")
 	@GET
 	@Produces("application/json")
 	public Response getVersion(@PathParam("contentName") String contentName, @PathParam("versionName") String versionName) {
