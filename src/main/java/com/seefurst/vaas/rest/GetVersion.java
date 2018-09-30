@@ -1,6 +1,8 @@
 package com.seefurst.vaas.rest;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,7 +19,11 @@ import javax.jcr.Node;
 import javax.jcr.Workspace;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.util.logging.Logger;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
 
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_ATTRB_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
@@ -26,7 +32,7 @@ import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 public class GetVersion implements VaasRestBase{
 	@Context
 	private HttpServletRequest req;
-	
+	private static final Logger LOG = Logger.getLogger(GetVersion.class.getName());
 	
 	
 	
@@ -68,7 +74,7 @@ public class GetVersion implements VaasRestBase{
 					"\"error:\"" + a.getLocalizedMessage() + "\"" +
 					"}").build();
 		} catch (RepositoryException b) {
-			return Response.serverError().encoding("utf-8").entity("{\"error\": \"" + b.getLocalizedMessage() + "\"}").build();
+			return logErrorAndRespond(b);
 		}
 		
 		
@@ -96,11 +102,71 @@ public class GetVersion implements VaasRestBase{
 		} catch(VersionException a) {
 			return Response.status(404, "{\"error\": \"The content " + contentName + " does not have version " + versionName + "\"}").encoding("utf-8").build();
 		}catch (RepositoryException b) {
-			return Response.serverError().encoding("utf-8").entity("{\"error\": {\"" + b.getLocalizedMessage() + "\"}").build();
+			return logErrorAndRespond(b);
 		}
 	}
 	
+	@Path("commit/{contentName}")
+	@PUT
+	@POST
+	@Produces("application/json")
+	public Response commitVersion(@PathParam("contentName") String contentName) {
+		Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
+		Workspace wrkSp = repoSess.getWorkspace();
+		LOG.
+		try {
+			Node root = repoSess.getRootNode();
+			String json = extractJsonFromRequest(req); 
+			VersionManager vm = wrkSp.getVersionManager();
+			Node newContent = null;
+			if (root.hasNode(contentName)) {
+				
+				newContent = root.getNode(contentName);
+				newContent.setProperty(contentName, json);
+				
+				
+			} else {
+				//save a new node
+				newContent = root.addNode(contentName);
+				newContent.addMixin("mix:versionable");
+				newContent.setProperty(NODE_CONTENT_PROPERTY_NAME, json);
+				
+				
+			}
+			repoSess.save();
+			vm.checkin(newContent.getPath());
+			
+			return Response.accepted(json).build();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			
+			return logErrorAndRespond(e);
+		}
+		
+	}
 	
+	private String extractJsonFromRequest(HttpServletRequest req) {
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
+			StringBuffer jsonBuffer = new StringBuffer();
+			String line = null;
+			while ((line= br.readLine()) != null) {
+				jsonBuffer.append(line);
+			}
+			return jsonBuffer.toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return "{}";
+		}
+		
+	}
 	
-	
+	private Response logErrorAndRespond(Throwable e) {
+		LOG.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		return Response.serverError().encoding("utf-8").entity("{\"error\": {\"" + e.getLocalizedMessage() + "\"}").build();
+	}
 }
+	
+
+	
+
