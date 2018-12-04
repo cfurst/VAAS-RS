@@ -107,33 +107,40 @@ public class GetVersion implements VaasRestBase{
 	}
 	
 	@Path("commit/{contentName}")
-	@PUT
 	@POST
 	@Produces("application/json")
 	public Response commitVersion(@PathParam("contentName") String contentName) {
 		Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
 		Workspace wrkSp = repoSess.getWorkspace();
-		LOG.
+		LOG.fine("attempting to save");
 		try {
 			Node root = repoSess.getRootNode();
+			LOG.finest("Got root node. Attempting to read request...");
 			String json = extractJsonFromRequest(req); 
+			LOG.finest("got json... =========" + System.lineSeparator() +json + System.lineSeparator() + "=========" );
 			VersionManager vm = wrkSp.getVersionManager();
 			Node newContent = null;
 			if (root.hasNode(contentName)) {
-				
+				LOG.finest("root has node:" + contentName);
 				newContent = root.getNode(contentName);
-				newContent.setProperty(contentName, json);
-				
+				LOG.finest("got root node.. setting property");
+				newContent.setProperty(NODE_CONTENT_PROPERTY_NAME, json);
+				LOG.finest("Set content property");
 				
 			} else {
 				//save a new node
+				LOG.finest("creating new node....");
 				newContent = root.addNode(contentName);
+				LOG.finest("adding the mixin...");
 				newContent.addMixin("mix:versionable");
+				LOG.finest("setting property...");
 				newContent.setProperty(NODE_CONTENT_PROPERTY_NAME, json);
 				
 				
 			}
+			LOG.finest("saving session...");
 			repoSess.save();
+			LOG.fine("checking in new content...");
 			vm.checkin(newContent.getPath());
 			
 			return Response.accepted(json).build();
@@ -143,6 +150,13 @@ public class GetVersion implements VaasRestBase{
 			return logErrorAndRespond(e);
 		}
 		
+	}
+	
+	@PUT
+	@Produces("application/json")
+	@Path("commit/{contentName}")
+	public Response commitVersionPut(@PathParam("contentName") String contentName) {
+		return commitVersion(contentName);
 	}
 	
 	private String extractJsonFromRequest(HttpServletRequest req) {
