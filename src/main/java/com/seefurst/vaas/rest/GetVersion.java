@@ -55,16 +55,25 @@ public class GetVersion implements VaasRestBase{
 	@Produces("application/json")
 	public Response getLatestVersion(@PathParam("contentName") String contentName)  {
 		try {
+			LOG.fine("Attempting to get latest version of " + contentName +"...");
+			LOG.finest("getting session...");
 			Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
+			LOG.finest("getting workspace...");
 			Workspace wrkSp = repoSess.getWorkspace();
+			LOG.finest("getting version manager...");
 			VersionManager vm = wrkSp.getVersionManager();
+			LOG.finest("getting root node...");
 			Node root = repoSess.getRootNode();
 			if (root.hasNode(contentName)) {
+				LOG.finest("getting base version...");
 				Version v = vm.getBaseVersion(root.getNode(contentName).getPath());
+				LOG.finest("getting frozen node...");
 				Node vn = v.getFrozenNode();
+				LOG.fine("Found Latest version and returning content...");
 				return Response.ok().encoding("utf-8").entity(vn.getProperty(NODE_CONTENT_PROPERTY_NAME).getString()).build();
 				 
 			} else {
+				LOG.fine(contentName + " is not here! Sending 404...");
 				return Response.status(404, "{\"error\": \"The content " + contentName + " was not found or does not have any versions yet\"}").build();
 			}
 			
@@ -129,7 +138,7 @@ public class GetVersion implements VaasRestBase{
 				
 			} else {
 				//save a new node
-				LOG.finest("creating new node....");
+				LOG.finest("creating new node with contentName: " + contentName + "....");
 				newContent = root.addNode(contentName);
 				LOG.finest("adding the mixin...");
 				newContent.addMixin("mix:versionable");
