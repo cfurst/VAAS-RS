@@ -22,6 +22,7 @@ import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_A
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.VERSION_NODE_MIXIN;
 
+@Path("content")
 public class SaveVersion {
 	@Context
 	private HttpServletRequest req;

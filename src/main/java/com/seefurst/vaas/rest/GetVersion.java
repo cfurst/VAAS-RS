@@ -115,6 +115,7 @@ public class GetVersion implements VaasRestBase{
 		}
 	}
 	
+	/** commented out for now
 	@Path("commit/{contentName}")
 	@POST
 	@Produces("application/json")
@@ -148,7 +149,8 @@ public class GetVersion implements VaasRestBase{
 				
 			}
 			
-			LOG.fine("checking in new content...");
+			LOG.fine("checking in new content for path: " + newContent.getPath() + "...");
+			repoSess.save();
 			vm.checkin(newContent.getPath());
 			LOG.finest("saving session...");
 			repoSess.save();
@@ -161,12 +163,14 @@ public class GetVersion implements VaasRestBase{
 		
 	}
 	
+	
 	@PUT
 	@Produces("application/json")
 	@Path("commit/{contentName}")
 	public Response commitVersionPut(@PathParam("contentName") String contentName) {
 		return commitVersion(contentName);
 	}
+	*/
 	
 	private String extractJsonFromRequest(HttpServletRequest req) {
 		try {
