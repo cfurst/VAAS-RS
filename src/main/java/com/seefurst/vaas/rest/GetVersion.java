@@ -147,11 +147,11 @@ public class GetVersion implements VaasRestBase{
 				
 				
 			}
-			LOG.finest("saving session...");
-			repoSess.save();
+			
 			LOG.fine("checking in new content...");
 			vm.checkin(newContent.getPath());
-			
+			LOG.finest("saving session...");
+			repoSess.save();
 			return Response.accepted(json).build();
 		} catch (RepositoryException e) {
 			// TODO Auto-generated catch block
