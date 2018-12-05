@@ -23,6 +23,10 @@ import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_A
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.VERSION_NODE_MIXIN;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 @Path("content")
 public class SaveVersion {
 	@Context
@@ -30,11 +34,10 @@ public class SaveVersion {
 	
 	
 	@POST
-	@PUT
 	@Path("commit/{contentName}")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response commitVersion(@PathParam("contentName") String contentName, String content) {
+	public Response commitVersion(@PathParam("contentName") String contentName) {
 		Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
 		Workspace ws = repoSess.getWorkspace();
 		try {
@@ -49,6 +52,7 @@ public class SaveVersion {
 				contentNode.addMixin(VERSION_NODE_MIXIN);
 			}
 			vm.checkout(contentNode.getPath());
+			String content = extractJsonFromRequest(req); 
 			contentNode.setProperty(NODE_CONTENT_PROPERTY_NAME, content);
 			repoSess.save();
 			Version v = vm.checkin(contentNode.getPath());
@@ -58,6 +62,30 @@ public class SaveVersion {
 			System.err.println(e.getLocalizedMessage());
 			e.printStackTrace(System.err);
 			return Response.serverError().entity("{\"error\": \"" + e.getLocalizedMessage() + "\"}").build();
+		}
+		
+	}
+	
+	@PUT
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("commit/{contentName}")
+	public Response commitVersionPut(@PathParam("contentName") String contentName) {
+		return commitVersion(contentName);
+	}
+	
+	private String extractJsonFromRequest(HttpServletRequest req) {
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
+			StringBuffer jsonBuffer = new StringBuffer();
+			String line = null;
+			while ((line= br.readLine()) != null) {
+				jsonBuffer.append(line);
+			}
+			return jsonBuffer.toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return "{}";
 		}
 		
 	}
