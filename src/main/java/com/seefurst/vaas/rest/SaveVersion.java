@@ -59,7 +59,7 @@ public class SaveVersion {
 				/*
 				 * debug delete when done....
 				 */
-				LOG.finest("Ok... we persisted.. is it here? " +  root.hasNode("/" + contentName));;
+				LOG.finest("Ok... we persisted.. is it here? " +  root.hasNode(contentName));;
 			}
 			LOG.fine("checking out: " + contentNode.getPath());
 			vm.checkout(contentNode.getPath());
