@@ -172,21 +172,7 @@ public class GetVersion implements VaasRestBase{
 	}
 	*/
 	
-	private String extractJsonFromRequest(HttpServletRequest req) {
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
-			StringBuffer jsonBuffer = new StringBuffer();
-			String line = null;
-			while ((line= br.readLine()) != null) {
-				jsonBuffer.append(line);
-			}
-			return jsonBuffer.toString();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			return "{}";
-		}
-		
-	}
+	
 	
 	private Response logErrorAndRespond(Throwable e) {
 		LOG.log(Level.SEVERE, e.getLocalizedMessage(), e);

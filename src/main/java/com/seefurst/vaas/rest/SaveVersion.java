@@ -16,6 +16,8 @@ import javax.jcr.version.Version;
 import javax.jcr.Node;
 import javax.jcr.Workspace;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -31,7 +33,7 @@ import java.io.InputStreamReader;
 public class SaveVersion {
 	@Context
 	private HttpServletRequest req;
-	
+	private static final Logger LOG = Logger.getLogger(SaveVersion.class.getName());
 	
 	@POST
 	@Path("commit/{contentName}")
@@ -45,17 +47,26 @@ public class SaveVersion {
 			VersionManager vm = ws.getVersionManager();
 			Node contentNode = null;
 			if (root.hasNode(contentName)) {
+				LOG.fine("repository has node.. fetching node...");
 				contentNode = root.getNode(contentName);
 			} 
 			else {
+				LOG.fine("creating new node...");
 				contentNode = root.addNode(contentName);
+				LOG.finest("adding mixin..." + VERSION_NODE_MIXIN);
 				contentNode.addMixin(VERSION_NODE_MIXIN);
 			}
+			LOG.fine("checking out: " + contentNode.getPath());
 			vm.checkout(contentNode.getPath());
+			LOG.finest("extracting json...");
 			String content = extractJsonFromRequest(req); 
+			LOG.fine("adding content...");
 			contentNode.setProperty(NODE_CONTENT_PROPERTY_NAME, content);
+			LOG.finest("saving session...");
 			repoSess.save();
+			LOG.finest("checking in....");
 			Version v = vm.checkin(contentNode.getPath());
+			LOG.fine("done... sending response...");
 			
 			return Response.ok().encoding("utf-8").entity("{\"version\":\"" + v.getName() + "\"").build();
 		} catch (RepositoryException e) {
