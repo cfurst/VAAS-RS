@@ -55,6 +55,7 @@ public class SaveVersion {
 				contentNode = root.addNode(contentName);
 				LOG.finest("adding mixin..." + VERSION_NODE_MIXIN);
 				contentNode.addMixin(VERSION_NODE_MIXIN);
+				repoSess.save();
 			}
 			LOG.fine("checking out: " + contentNode.getPath());
 			vm.checkout(contentNode.getPath());
