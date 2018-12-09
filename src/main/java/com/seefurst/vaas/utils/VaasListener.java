@@ -3,6 +3,7 @@ package com.seefurst.vaas.utils;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContext;
+import javax.jcr.Repository;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -28,7 +29,14 @@ public class VaasListener implements ServletContextListener {
 			sc.log("servlet path: ========= : " + sc.getRealPath("/vaas"));
 			fs = FileStoreBuilder.fileStoreBuilder(new File(sc.getRealPath("/vaas"))).build();
 			SegmentNodeStore ns = SegmentNodeStoreBuilders.builder(fs).build();
-			new Jcr(new Oak(ns)).createRepository();
+			Repository repo = new Jcr(new Oak(ns)).createRepository();
+			
+			// DEBUG: remove when done...
+			//default descriptors.
+			String[] descriptorKeys = repo.getDescriptorKeys();
+			for (String descriptorKey : descriptorKeys) {
+				LOG.finest(descriptorKey + ": " + repo.getDescriptor(descriptorKey));
+			}
 			
 		} catch (InvalidFileStoreVersionException|IOException a) {
 			//TODO: MAKE THIS LOG4J
