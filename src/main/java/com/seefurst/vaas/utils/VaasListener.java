@@ -30,7 +30,7 @@ public class VaasListener implements ServletContextListener {
 			fs = FileStoreBuilder.fileStoreBuilder(new File(sc.getRealPath("/vaas"))).build();
 			SegmentNodeStore ns = SegmentNodeStoreBuilders.builder(fs).build();
 			Repository repo = new Jcr(new Oak(ns)).createRepository();
-			
+			LOG.finest("the repo is a .. " + repo.getClass().getCanonicalName());
 			// DEBUG: remove when done...
 			//default descriptors.
 			String[] descriptorKeys = repo.getDescriptorKeys();

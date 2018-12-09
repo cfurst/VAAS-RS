@@ -39,9 +39,19 @@ public class VaasRepoFilter implements Filter {
 			String repositoryUrl =  req.getServletContext().getRealPath("/vaas");
 			LOG.finest("got repourl: " + repositoryUrl);
 			Map<String, String> repoOptions = new HashMap<>();
-			//repoOptions.put("repository.home", repositoryUrl);
+			repoOptions.put("jcr.repository.vendor.url", "http://www.apache.org/");
 			LOG.finest("getting repo with null map...");
 			Repository repo = (new OakRepositoryFactory()).getRepository(null);
+			
+			LOG.finest("the repo is a .. " + repo.getClass().getCanonicalName());
+			// DEBUG: remove when done...
+			//default descriptors.
+			String[] descriptorKeys = repo.getDescriptorKeys();
+			for (String descriptorKey : descriptorKeys) {
+				LOG.finest(descriptorKey + ": " + repo.getDescriptor(descriptorKey));
+			}
+			
+			
 			LOG.fine("Logging in...");
 			repoSess = repo.login(new SimpleCredentials(REPOSITORY_USERNAME,REPOSITORY_PASSWORD.toCharArray()));
 			LOG.fine("done.. setting attribute...");
