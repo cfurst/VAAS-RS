@@ -37,9 +37,11 @@ public class VaasRepoFilter implements Filter {
 		HttpServletResponse httpRes = (HttpServletResponse) res;
 		try {
 			String repositoryUrl =  req.getServletContext().getRealPath("/vaas");
+			LOG.finest("got repourl: " + repositoryUrl);
 			Map<String, String> repoOptions = new HashMap<>();
-			repoOptions.put("repository.home", repositoryUrl);
-			Repository repo = (new OakRepositoryFactory()).getRepository(repoOptions);
+			//repoOptions.put("repository.home", repositoryUrl);
+			Repository repo = (new OakRepositoryFactory()).getRepository(null);
+			
 			repoSess = repo.login(new SimpleCredentials(REPOSITORY_USERNAME,REPOSITORY_PASSWORD.toCharArray()));
 			
 			httpReq.setAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME, repoSess);
