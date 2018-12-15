@@ -60,6 +60,7 @@ public class GetVersion implements VaasRestBase{
 			Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
 			LOG.finest("getting workspace...");
 			Workspace wrkSp = repoSess.getWorkspace();
+			LOG.finest("got workspace... name..." + wrkSp.getName());
 			LOG.finest("getting version manager...");
 			VersionManager vm = wrkSp.getVersionManager();
 			LOG.finest("getting root node...");

@@ -42,6 +42,7 @@ public class SaveVersion {
 	public Response commitVersion(@PathParam("contentName") String contentName) {
 		Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
 		Workspace ws = repoSess.getWorkspace();
+		LOG.finest("Got workspace... name..." + ws.getName());
 		try {
 			Node root = repoSess.getRootNode();
 			VersionManager vm = ws.getVersionManager();
