@@ -52,7 +52,7 @@ public class SaveVersion {
 				contentNode = root.getNode(contentName);
 			} 
 			else {
-				LOG.fine("creating new node...");
+				LOG.fine("creating new node... with key:" + contentName);
 				contentNode = root.addNode(contentName);
 				LOG.finest("adding mixin..." + VERSION_NODE_MIXIN);
 				contentNode.addMixin(VERSION_NODE_MIXIN);
