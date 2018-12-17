@@ -41,7 +41,9 @@ public class VaasRepoFilter implements Filter {
 			Map<String, String> repoOptions = new HashMap<>();
 			repoOptions.put("jcr.repository.vendor.url", "http://www.apache.org/");
 			LOG.finest("getting repo with null map...");
-			Repository repo = (new OakRepositoryFactory()).getRepository(null);
+			Repository repo = (Repository) req.getServletContext().getAttribute("repository");
+					
+			// (new OakRepositoryFactory()).getRepository(repoOptions);
 			
 			LOG.finest("the repo is a .. " + repo.getClass().getCanonicalName());
 			// DEBUG: remove when done...

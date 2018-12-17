@@ -35,7 +35,7 @@
     </filter>
     <filter-mapping>
     	<filter-name>Repo Login Filter</filter-name>
-    	<url-pattern>/content/*</url-pattern>
+    	<url-pattern>/content/commit/*</url-pattern>
     </filter-mapping>
     
     <listener>
