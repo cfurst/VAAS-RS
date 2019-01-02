@@ -1,8 +1,5 @@
 package com.seefurst.vaas.utils;
 
-import java.util.Map;
-import java.util.HashMap;
-
 import javax.servlet.Filter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -16,13 +13,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
-import org.apache.jackrabbit.oak.jcr.OakRepositoryFactory;
-import java.net.URLEncoder;
 import java.io.IOException;
 
 import java.util.logging.Logger;
 
-import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_FILEPATH;
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_USERNAME;
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_PASSWORD;
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_ATTRB_NAME;
@@ -36,23 +30,8 @@ public class VaasRepoFilter implements Filter {
 		HttpServletRequest httpReq = (HttpServletRequest) req;
 		HttpServletResponse httpRes = (HttpServletResponse) res;
 		try {
-			String repositoryUrl =  req.getServletContext().getRealPath("/vaas");
-			LOG.finest("got repourl: " + repositoryUrl);
-			Map<String, String> repoOptions = new HashMap<>();
-			repoOptions.put("jcr.repository.vendor.url", "http://www.apache.org/");
-			LOG.finest("getting repo with null map...");
+			
 			Repository repo = (Repository) req.getServletContext().getAttribute("repository");
-					
-			// (new OakRepositoryFactory()).getRepository(repoOptions);
-			
-			LOG.finest("the repo is a .. " + repo.getClass().getCanonicalName());
-			// DEBUG: remove when done...
-			//default descriptors.
-			String[] descriptorKeys = repo.getDescriptorKeys();
-			for (String descriptorKey : descriptorKeys) {
-				LOG.finest(descriptorKey + ": " + repo.getDescriptor(descriptorKey));
-			}
-			
 			
 			LOG.fine("Logging in...");
 			repoSess = repo.login(new SimpleCredentials(REPOSITORY_USERNAME,REPOSITORY_PASSWORD.toCharArray()));

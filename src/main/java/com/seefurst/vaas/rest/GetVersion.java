@@ -99,7 +99,7 @@ public class GetVersion implements VaasRestBase{
 				VersionHistory vh = vm.getVersionHistory(root.getNode(contentName).getPath());
 				Version v = vh.getVersion(versionName);
 				Node f = v.getFrozenNode();
-				return Response.ok(f.getProperty(NODE_CONTENT_PROPERTY_NAME)).encoding("utf-8").build();
+				return Response.ok(f.getProperty(NODE_CONTENT_PROPERTY_NAME).getString()).encoding("utf-8").build();
 			} else {
 				return Response.status(404, "{\"error\": \"The content " + contentName + " was not found\"}").build();
 			}
@@ -111,65 +111,13 @@ public class GetVersion implements VaasRestBase{
 		}
 	}
 	
-	/** commented out for now
-	@Path("commit/{contentName}")
-	@POST
-	@Produces("application/json")
-	public Response commitVersion(@PathParam("contentName") String contentName) {
-		Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
-		Workspace wrkSp = repoSess.getWorkspace();
-		LOG.fine("attempting to save");
-		try {
-			Node root = repoSess.getRootNode();
-			LOG.finest("Got root node. Attempting to read request...");
-			String json = extractJsonFromRequest(req); 
-			LOG.finest("got json... =========" + System.lineSeparator() +json + System.lineSeparator() + "=========" );
-			VersionManager vm = wrkSp.getVersionManager();
-			Node newContent = null;
-			if (root.hasNode(contentName)) {
-				LOG.finest("root has node:" + contentName);
-				newContent = root.getNode(contentName);
-				LOG.finest("got root node.. setting property");
-				newContent.setProperty(NODE_CONTENT_PROPERTY_NAME, json);
-				LOG.finest("Set content property");
-				
-			} else {
-				//save a new node
-				LOG.finest("creating new node with contentName: " + contentName + "....");
-				newContent = root.addNode(contentName);
-				LOG.finest("adding the mixin...");
-				newContent.addMixin("mix:versionable");
-				LOG.finest("setting property...");
-				newContent.setProperty(NODE_CONTENT_PROPERTY_NAME, json);
-				
-				
-			}
-			
-			LOG.fine("checking in new content for path: " + newContent.getPath() + "...");
-			repoSess.save();
-			vm.checkin(newContent.getPath());
-			LOG.finest("saving session...");
-			repoSess.save();
-			return Response.accepted(json).build();
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			
-			return logErrorAndRespond(e);
-		}
-		
-	}
 	
 	
-	@PUT
-	@Produces("application/json")
-	@Path("commit/{contentName}")
-	public Response commitVersionPut(@PathParam("contentName") String contentName) {
-		return commitVersion(contentName);
-	}
-	*/
-	
-	
-	
+	/**
+	 * TODO: move this to base interface as default and public.
+	 * @param e - Error to log
+	 * @return - server error response.
+	 */
 	private Response logErrorAndRespond(Throwable e) {
 		LOG.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		return Response.serverError().encoding("utf-8").entity("{\"error\": {\"" + e.getLocalizedMessage() + "\"}").build();

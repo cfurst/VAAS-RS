@@ -30,19 +30,11 @@ public class VaasListener implements ServletContextListener {
 			fs = FileStoreBuilder.fileStoreBuilder(new File(sc.getRealPath("/vaas"))).build();
 			SegmentNodeStore ns = SegmentNodeStoreBuilders.builder(fs).build();
 			Repository repo = new Jcr(new Oak(ns)).createRepository();
-			ctx.getServletContext().setAttribute("repository", repo);
+			sc.setAttribute("repository", repo);
 			
 			
 			
-			/**
-			 * LOG.finest("the repo is a .. " + repo.getClass().getCanonicalName());
-			// DEBUG: remove when done...
-			//default descriptors.
-			String[] descriptorKeys = repo.getDescriptorKeys();
-			for (String descriptorKey : descriptorKeys) {
-				LOG.finest(descriptorKey + ": " + repo.getDescriptor(descriptorKey));
-			}
-			 */
+			
 			
 			
 		} catch (InvalidFileStoreVersionException|IOException a) {
