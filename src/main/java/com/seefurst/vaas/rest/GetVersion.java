@@ -11,6 +11,7 @@ import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.version.VersionManager;
 import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionIterator;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.Node;
@@ -18,10 +19,15 @@ import javax.jcr.Workspace;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_ATTRB_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 @Path("content")
 public class GetVersion implements VaasRestBase{
@@ -84,6 +90,38 @@ public class GetVersion implements VaasRestBase{
 		
 		
 	}
+	
+	@Path("get/{contentName}/versionList")
+	@GET
+	@Produces("application/json")
+	public Response getVersionList(@PathParam("contentName") String contentName) {
+		try {
+			Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
+			Workspace wrkSp = repoSess.getWorkspace();
+			VersionManager vm = wrkSp.getVersionManager();
+			Node root = repoSess.getRootNode();
+			VersionHistory vh = vm.getVersionHistory(root.getNode(contentName).getPath());
+			VersionIterator vi = vh.getAllVersions();
+			Version v = null;
+			JSONObject versionObject = new JSONObject();
+			while (vi.hasNext()) {
+				v = vi.nextVersion();
+				String[] labels = vh.getVersionLabels(v);
+				JSONArray labelJsonArray = new JSONArray();
+				Arrays.stream(labels).forEach(label -> {
+					labelJsonArray.put(label);
+				});
+				versionObject.put(v.getName(), labelJsonArray);
+			}
+		
+			return Response.ok(versionObject.toString()).encoding("utf-8").build();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			return logErrorAndRespond(e);
+		}
+		
+	}
+	
 	
 	@Path("get/{contentName}/{versionName}")
 	@GET
