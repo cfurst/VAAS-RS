@@ -37,7 +37,7 @@ public class SaveVersion {
 	
 	@POST
 	@Path("commit/{contentName}")
-	@Consumes("application/json")
+	@Consumes("application/x-www-form-urlencoded")
 	@Produces("application/json")
 	public Response commitVersion(@PathParam("contentName") String contentName) {
 		Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
@@ -63,6 +63,7 @@ public class SaveVersion {
 			vm.checkout(contentNode.getPath());
 			LOG.finest("extracting json...");
 			String content = extractJsonFromRequest(req); 
+			LOG.finest("content: " + content);
 			LOG.fine("adding content...");
 			contentNode.setProperty(NODE_CONTENT_PROPERTY_NAME, content);
 			LOG.finest("saving session...");
