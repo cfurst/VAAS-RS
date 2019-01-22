@@ -25,22 +25,27 @@ import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_A
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.VERSION_NODE_MIXIN;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 
 @Path("content")
-public class SaveVersion {
+public class SaveVersion implements VaasRestBase{
 	@Context
 	private HttpServletRequest req;
 	private static final Logger LOG = Logger.getLogger(SaveVersion.class.getName());
 	
+	
+	/**
+	 * TODO: Posting from curl from a file somehow removed the first character of the post... need to test post with a different client.
+	 * 
+	 * @param contentName
+	 * @return
+	 */
 	@POST
 	@Path("commit/{contentName}")
 	@Consumes("application/x-www-form-urlencoded")
 	@Produces("application/json")
 	public Response commitVersion(@PathParam("contentName") String contentName) {
-		Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
+		Session repoSess = getSession(req);
 		Workspace ws = repoSess.getWorkspace();
 		LOG.finest("Got workspace... name..." + ws.getName());
 		try {
@@ -89,19 +94,5 @@ public class SaveVersion {
 		return commitVersion(contentName);
 	}
 	
-	private String extractJsonFromRequest(HttpServletRequest req) {
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
-			StringBuffer jsonBuffer = new StringBuffer();
-			String line = null;
-			while ((line= br.readLine()) != null) {
-				jsonBuffer.append(line);
-			}
-			return jsonBuffer.toString();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			return "{}";
-		}
-		
-	}
+	
 }

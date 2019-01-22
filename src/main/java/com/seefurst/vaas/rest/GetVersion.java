@@ -58,7 +58,7 @@ public class GetVersion implements VaasRestBase{
 		try {
 			LOG.fine("Attempting to get latest version of " + contentName +"...");
 			LOG.finest("getting session...");
-			Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
+			Session repoSess = getSession(req);
 			LOG.finest("getting workspace...");
 			Workspace wrkSp = repoSess.getWorkspace();
 			LOG.finest("got workspace... name..." + wrkSp.getName());
@@ -96,7 +96,7 @@ public class GetVersion implements VaasRestBase{
 	@Produces("application/json")
 	public Response getVersionList(@PathParam("contentName") String contentName) {
 		try {
-			Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
+			Session repoSess = getSession(req);
 			Workspace wrkSp = repoSess.getWorkspace();
 			VersionManager vm = wrkSp.getVersionManager();
 			Node root = repoSess.getRootNode();
@@ -130,7 +130,7 @@ public class GetVersion implements VaasRestBase{
 	@Produces("application/json")
 	public Response getVersion(@PathParam("contentName") String contentName, @PathParam("versionName") String versionName) {
 		try {
-			Session repoSess = (Session) req.getAttribute(REPOSITORY_SESSION_SERVLET_ATTRB_NAME);
+			Session repoSess = getSession(req);
 			Workspace wrkSp = repoSess.getWorkspace();
 			Node root = repoSess.getRootNode();
 			if (root.hasNode(contentName)) {
@@ -151,19 +151,6 @@ public class GetVersion implements VaasRestBase{
 		}
 	}
 	
-	
-	
-	/**
-	 * TODO: move this to base interface as default and public.
-	 * @param e - Error to log
-	 * @return - server error response.
-	 */
-	private Response logErrorAndRespond(Throwable e) {
-		LOG.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		return Response.serverError().encoding("utf-8").entity("{\"error\": {\"" + e.getLocalizedMessage() + "\"}").build();
-	}
 }
-	
-
 	
 

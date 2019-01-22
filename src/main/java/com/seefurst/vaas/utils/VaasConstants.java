@@ -8,4 +8,5 @@ public class VaasConstants {
 	public static final String REPOSITORY_SESSION_SERVLET_ATTRB_NAME="repositorySession";
 	public static final String NODE_CONTENT_PROPERTY_NAME= "content";
 	public static final String VERSION_NODE_MIXIN = "mix:versionable";
+	public static final String UTF8 = "utf-8";
 }
