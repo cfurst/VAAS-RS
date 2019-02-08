@@ -52,8 +52,8 @@ public class LabelVersion implements VaasRestBase {
 			Node root = repoSess.getRootNode();
 			VersionHistory vh = vm.getVersionHistory(root.getNode(contentName).getPath());
 			
-			if (vh.hasVersionLabel(v, labelName)) {
-					return Response.status(Status.BAD_REQUEST).encoding(UTF8).entity("{\"error\": \"the Label: " + labelName + " is already assigned to version " + v.getName() + " of " + contentName + "\"}").build();
+			if (vh.hasVersionLabel(labelName)) {
+					return Response.status(Status.BAD_REQUEST).encoding(UTF8).entity("{\"error\": \"the Label: " + labelName + " is already assigned to a version for " + contentName + "\"}").build();
 			}
 			else {
 				vh.addVersionLabel(version, labelName, false);
