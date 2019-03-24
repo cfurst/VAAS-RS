@@ -11,16 +11,14 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.version.Version;
-import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_ATTRB_NAME;
+
 import static com.seefurst.vaas.utils.VaasConstants.UTF8;
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 
@@ -122,7 +120,7 @@ public class LabelVersion implements VaasRestBase {
 		}
 	}
 	
-	@Path("get/{contentName}/by-label/{labelName}")
+	@Path("get-by-label/{contentName}/{labelName}")
 	@GET
 	@Produces("application/json")
 	public Response getByLabel(@PathParam("contentName") String contentName, @PathParam("labelName") String labelName) {
