@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response.Status;
 
 import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_ATTRB_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.UTF8;
+import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 
 import java.util.logging.Logger;
 
@@ -120,5 +121,33 @@ public class LabelVersion implements VaasRestBase {
 			return logErrorAndRespond(a);
 		}
 	}
-
+	
+	@Path("get/{contentName}/by-label/{labelName}")
+	@GET
+	@Produces("application/json")
+	public Response getByLabel(@PathParam("contentName") String contentName, @PathParam("labelName") String labelName) {
+		try {
+			Session repoSess = getSession(req);
+			Workspace wrkSp = repoSess.getWorkspace();
+			VersionManager vm = wrkSp.getVersionManager();
+			Node root = repoSess.getRootNode();
+			if (root.hasNode(contentName)) {
+				
+				VersionHistory vh = vm.getVersionHistory(root.getNode(contentName).getPath());
+				if (vh.hasVersionLabel(labelName)) {
+					Version v = vh.getVersionByLabel(labelName);
+					return Response.ok(v.getFrozenNode().getProperty(NODE_CONTENT_PROPERTY_NAME)).build();
+				} else {
+					return Response.status(Status.NOT_FOUND).encoding(UTF8).entity("{\"error\":\"" + labelName + " for content name: " + contentName + " was not found. Check the label and try again.\"}").build();
+				}
+				
+				
+			} else {
+				return Response.status(Status.NOT_FOUND).encoding(UTF8).entity("{\"error\":\"" + contentName + " was not found\"}").build();
+			}
+		}
+		catch (RepositoryException a) {
+			return logErrorAndRespond(a);
+		}
+	}
 }
