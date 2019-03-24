@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Carl Yamamoto-Furst
  *
  */
-@Path("content")
+@Path("content/label")
 public class LabelVersion implements VaasRestBase {
 
 	private static final Logger LOG = Logger.getLogger(LabelVersion.class.getName());
@@ -39,7 +39,7 @@ public class LabelVersion implements VaasRestBase {
 	@Context
 	private HttpServletRequest req;
 	
-	@Path("add-label/{contentName}/{version}/{labelName}")
+	@Path("add/{contentName}/{version}/{labelName}")
 	@GET
 	@Produces("application/json")
 	public Response setLabel(@PathParam("contentName") String contentName, @PathParam("version") String version, @PathParam("labelName") String labelName) {
@@ -64,7 +64,7 @@ public class LabelVersion implements VaasRestBase {
 		
 	}
 	
-	@Path("remove-label/{contentName}/{labelName}")
+	@Path("remove/{contentName}/{labelName}")
 	@GET
 	@Produces("application/json")
 	public Response removeLabel(@PathParam("contentName") String contentName, @PathParam("labelName") String labelName) {
@@ -97,7 +97,7 @@ public class LabelVersion implements VaasRestBase {
 	 * @param labelName
 	 * @return
 	 */
-	@Path("move-label/{contentName}/{toVersion}/{labelName}")
+	@Path("move/{contentName}/{toVersion}/{labelName}")
 	@GET
 	@Produces("application/json")
 	public Response moveLabel(@PathParam("contentName") String contentName, @PathParam("toVersion") String destVersion, @PathParam("labelName") String labelName) {
@@ -120,7 +120,7 @@ public class LabelVersion implements VaasRestBase {
 		}
 	}
 	
-	@Path("get-by-label/{contentName}/{labelName}")
+	@Path("get/{contentName}/{labelName}")
 	@GET
 	@Produces("application/json")
 	public Response getByLabel(@PathParam("contentName") String contentName, @PathParam("labelName") String labelName) {
