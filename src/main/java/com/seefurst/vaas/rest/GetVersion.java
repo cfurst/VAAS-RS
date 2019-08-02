@@ -104,6 +104,7 @@ public class GetVersion implements VaasRestBase{
 			VersionIterator vi = vh.getAllVersions();
 			Version v = null;
 			JSONObject versionObject = new JSONObject();
+			//implement as stream
 			while (vi.hasNext()) {
 				v = vi.nextVersion();
 				if (v.getName().equals("jcr:rootVersion"))
