@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 
-import static com.seefurst.vaas.utils.VaasConstants.REPOSITORY_SESSION_SERVLET_ATTRB_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.NODE_CONTENT_PROPERTY_NAME;
 import static com.seefurst.vaas.utils.VaasConstants.VERSION_NODE_MIXIN;
 
@@ -42,7 +41,6 @@ public class SaveVersion implements VaasRestBase{
 	 */
 	@POST
 	@Path("commit/{contentName}")
-	@Consumes("application/x-www-form-urlencoded")
 	@Produces("application/json")
 	public Response commitVersion(@PathParam("contentName") String contentName) {
 		Session repoSess = getSession(req);
